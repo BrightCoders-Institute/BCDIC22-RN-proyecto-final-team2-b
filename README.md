@@ -1,4 +1,4 @@
-![BrightCoders Logo](../img/logo.png)
+![BrightCoders Logo](https://github.com/BrightCoders-Institute/BCDIC22-RN-proyecto-final-team2-b/blob/master/img/logo.png)
 
 - [Proyecto Final](#proyecto-final)
   - [Objetivos](#objetivos)
