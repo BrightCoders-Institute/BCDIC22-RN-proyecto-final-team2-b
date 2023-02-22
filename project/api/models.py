@@ -21,8 +21,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
+ 
 class Product(models.Model):
+    user = models.ManyToManyField(User)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=200,null=True, blank=True)
     franchise = models.CharField(max_length=200,null=False, blank=False)
@@ -31,6 +32,7 @@ class Product(models.Model):
     recently_added = models.BooleanField(default=False)
     best_seller = models.BooleanField(default=False)
     image =  models.ImageField(upload_to=product_directory_path)
+    favorite = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

@@ -22,7 +22,7 @@ import os
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-
+CSRF_TRUSTED_ORIGINS = ['https://findgure.up.railway.app']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
      'rest_framework',
-     'rest_framework.authtoken'
+     'rest_framework.authtoken',
+     "corsheaders"
 ]
 
 REST_FRAMEWORK = {
@@ -51,6 +52,8 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+     "corsheaders.middleware.CorsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -77,6 +80,7 @@ TEMPLATES = [
     },
 ]
 
+CORS_ALLOW_ALL_ORIGINS=True
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
@@ -141,6 +145,7 @@ STATICFILES_DIR = [
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 
 MEDIA_URL = '/media/'
