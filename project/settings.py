@@ -26,7 +26,7 @@ CSRF_TRUSTED_ORIGINS = ['https://findgure.up.railway.app']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['findgure.up.railway.app']
+ALLOWED_HOSTS = ['findgure.up.railway.app','127.0.0.1']
 
 
 # Application definition
@@ -156,7 +156,8 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = 'AWS_STORAGE_BUCKET_NAME'
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+
 
 
 
