@@ -23,7 +23,7 @@ class Category(models.Model):
 
  
 class Product(models.Model):
-    user = models.ManyToManyField(User)
+    user = models.ManyToManyField(User, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=200,null=True, blank=True)
     franchise = models.CharField(max_length=200,null=False, blank=False)
