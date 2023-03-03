@@ -10,3 +10,5 @@ admin.site.register(Category)
 admin.site.register(Reviews)
 admin.site.register(Franchise)
 admin.site.register(CustomUser)
+
+

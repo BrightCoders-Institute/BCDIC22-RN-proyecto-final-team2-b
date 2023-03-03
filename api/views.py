@@ -1,12 +1,11 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer, ProductSerializer, CategorySerializer
 from django.contrib.auth import authenticate, login
-
-
+from .models import Product, Category
 
 User = get_user_model()
 
@@ -25,8 +24,7 @@ class SignUpView(generics.CreateAPIView):
 
 
 class LoginView(APIView):
-    def post(self, request):
-        
+    def post(self, request):        
         username = request.data.get('username')
         password = request.data.get('password')
 
@@ -41,6 +39,8 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-class ProductViewSet(viewsets.ModelViewSet):
+
+class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = CategorySerializer
+
