@@ -1,10 +1,13 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
-from .serializers import UserSerializer
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer, ProductSerializer, CategorySerializer
 from django.contrib.auth import authenticate, login
+from .models import Product, Category
+
+User = get_user_model()
 
 class SignUpView(generics.CreateAPIView):
     serializer_class = UserSerializer
@@ -21,7 +24,7 @@ class SignUpView(generics.CreateAPIView):
 
 
 class LoginView(APIView):
-    def post(self, request):
+    def post(self, request):        
         username = request.data.get('username')
         password = request.data.get('password')
 
@@ -31,3 +34,13 @@ class LoginView(APIView):
             return Response({'token': token.key})
         else:
             return Response({'error': 'Invalid login credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+

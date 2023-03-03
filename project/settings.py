@@ -99,8 +99,8 @@ DATABASES = {
         'NAME': 'railway',
         'USER': 'postgres',
         'PASSWORD': config('PASSWORD'),
-        'HOST': 'containers-us-west-164.railway.app',
-        'PORT': '7053',
+        'HOST': 'containers-us-west-130.railway.app',
+        'PORT': '5465',
     }
 }
 
@@ -159,3 +159,6 @@ AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'api.CustomUser'
+
+
