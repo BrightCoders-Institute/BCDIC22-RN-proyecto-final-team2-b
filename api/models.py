@@ -43,6 +43,12 @@ class CustomUser(auth_models.AbstractUser):
     username = models.CharField(verbose_name="Username",max_length=255)
     email = models.EmailField(verbose_name="Email", max_length=255, unique=True)
     password = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, default="",blank=True)
+    city = models.CharField(max_length=255,default="", blank=True)
+    postal_code = models.IntegerField(default=000)
+    country = models.CharField(max_length=255, default="", blank=True)
+
+
     objects = UserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["password", "username"]
@@ -68,6 +74,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200,null=True, blank=True)
     rating = models.FloatField(null=False, blank=False)
     price = models.FloatField(null=False, blank=False)
+    description = models.CharField(max_length=500, blank=True, default="")
     recently_added = models.BooleanField(default=False)
     best_seller = models.BooleanField(default=False)
     best_seller_image = models.ImageField(upload_to=product_directory_path, default="category/Marvel_Logo.svg.png")
