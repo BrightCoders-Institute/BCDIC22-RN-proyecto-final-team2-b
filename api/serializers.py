@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Product, Category, Franchise
+from .models import Product, Category, Franchise, Order, Category
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password')
+        fields = ('id', 'username', 'email', 'password',"city","address","postal_code","country")
 
 
 class FranchiseSerializer(serializers.ModelSerializer):
@@ -36,3 +36,17 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields= ["delivery_date", "shippingPrice", "status", "totalPrice"]
+
+
+class FranchiseSerializer(serializers.ModelSerializer):
+    products = ProductSerializer(many=True, read_only=True, source='product_set')
+    franchise = serializers.CharField(source='name')
+    class Meta:
+        model = Franchise
+        fields = ('franchise','products')
