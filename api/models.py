@@ -77,8 +77,8 @@ class Product(models.Model):
     description = models.CharField(max_length=500, blank=True, default="")
     recently_added = models.BooleanField(default=False)
     best_seller = models.BooleanField(default=False)
-    best_seller_image = models.ImageField(upload_to=product_directory_path, default="category/Marvel_Logo.svg.png")
-    image =  models.ImageField(upload_to=bestseller_path)
+    best_seller_image = models.ImageField(upload_to=bestseller_path, null=True, blank=True)
+    image =  models.ImageField(upload_to=product_directory_path)
     favorite = models.BooleanField(default=False)
 
     def __str__(self):
