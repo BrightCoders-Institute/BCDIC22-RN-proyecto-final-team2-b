@@ -135,3 +135,4 @@ class DetailProductView(APIView):
         product = get_object_or_404(Product, id=product_id)
         serializer = ProductDetailSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
