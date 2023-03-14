@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import models as auth_models
-
+from django.utils import timezone
 def product_directory_path(instance,filename):
     return 'products/{0}'.format(filename)
 
@@ -69,8 +69,7 @@ class Franchise(models.Model):
         return self.name
  
 class Product(models.Model):
-    user = models.ManyToManyField(CustomUser, blank=True)
-    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)
+    franchise = models.ForeignKey(Franchise, on_delete=models.CASCADE)     
     name = models.CharField(max_length=200,null=True, blank=True)
     rating = models.FloatField(null=False, blank=False)
     price = models.FloatField(null=False, blank=False)
@@ -79,7 +78,8 @@ class Product(models.Model):
     best_seller = models.BooleanField(default=False)
     best_seller_image = models.ImageField(upload_to=bestseller_path, null=True, blank=True)
     image =  models.ImageField(upload_to=product_directory_path)
-    favorite = models.BooleanField(default=False)
+    favorite_by = models.ManyToManyField(CustomUser,related_name='favorite_products', blank=True)
+
 
     def __str__(self):
         return self.name
@@ -109,15 +109,9 @@ class OrderItem(models.Model):
 class Reviews(models.Model):
     rating = models.FloatField()
     review = models.CharField(max_length=250)
-    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    date_created = models.DateTimeField(auto_created=True,null=False, blank=True, default=timezone.now)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user_id
-
-
- 
-
-
-
-
+        return self.review
