@@ -2,12 +2,14 @@ from rest_framework import generics, status, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, ProductSerializer, CategorySerializer, OrderSerializer, FranchiseSerializer
+from .serializers import UserSerializer, ProductSerializer, CategorySerializer, OrderSerializer, \
+     FranchiseSerializer, ReviewSerializer, ProductDetailSerializer
 from django.contrib.auth import authenticate, login
-from .models import Product, Category, Order, Franchise
+from .models import Product, Category, Order, Franchise, Reviews
 
 User = get_user_model()
 
@@ -77,10 +79,59 @@ class FranchiseView(APIView):
         franchise  = Franchise.objects.filter(category= category)
         serializer = FranchiseSerializer(franchise, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
 
+class FavoriteProductView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        user = request.user
+        favorite_products = Product.objects.filter(favorite_by=user)
+        serializer = ProductSerializer(favorite_products, many=True)
+        return Response({'favorites': serializer.data})
 
+    def post(self, request, product_id):
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
+        user = request.user
+        product.favorite_by.add(user)
+        product.save()
+        return Response({'status': 'Product added to whishlist'}, status=status.HTTP_201_CREATED)
 
+    def delete(self, request, product_id):
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        product.favorite_by.remove(request.user)
+        return Response({'status': 'Product removed from whishlist'})
 
+class ReviewProductAPIView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, product_id,*args, **kwargs):
+        if Reviews.objects.filter(product_id=product_id, user=request.user).exists():
+            return Response({"message":"You already have been comment this product"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            serializer = ReviewSerializer(data=request.data)
+            if serializer.is_valid():
+                product = get_object_or_404(Product, id=product_id)
+                review = serializer.save(user=request.user, product=product)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, product_id):
+        product = Product.objects.get(id=product_id)
+        reviews = Reviews.objects.filter(product=product)
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DetailProductView(APIView):
+    def get(self, request, product_id, *args, **kwargs):
+        product = get_object_or_404(Product, id=product_id)
+        serializer = ProductDetailSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)

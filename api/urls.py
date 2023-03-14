@@ -1,5 +1,6 @@
 from django.urls import path, include
-from .views import SignUpView, LoginView, ProductViewSet, CategoryViewSet, UserView, OrderView, FranchiseView
+from .views import SignUpView, LoginView, ProductViewSet, CategoryViewSet, UserView, OrderView, FranchiseView, FavoriteProductView, \
+    ReviewProductAPIView, DetailProductView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -13,4 +14,18 @@ urlpatterns = [
     path('users/orders/', OrderView.as_view(), name='users-orders'),
     path('signup/', SignUpView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
+
+    #favorite
+    path('product/favorite/<int:product_id>/', FavoriteProductView.as_view(), name='favorite'),
+    path('product/favorite/', FavoriteProductView.as_view(), name='favorite'),
+
+    #reviews
+    path('product/review/<int:product_id>/', ReviewProductAPIView.as_view(), name='review'),
+
+    #get product
+    path('product/detail/<int:product_id>/', DetailProductView.as_view(), name='review'),
+
+
+   
+
 ]
