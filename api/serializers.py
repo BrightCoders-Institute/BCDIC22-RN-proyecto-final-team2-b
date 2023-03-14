@@ -76,7 +76,4 @@ class FranchiseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Franchise
         fields = ('franchise','products')
-
-
-
-  
+        
