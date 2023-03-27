@@ -29,3 +29,4 @@ urlpatterns = [
     path('search/', SearchAPIView.as_view(), name='review'),
 
 ]
+
