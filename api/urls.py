@@ -26,7 +26,7 @@ urlpatterns = [
     path('product/detail/<int:product_id>/', DetailProductView.as_view(), name='review'),
 
      # search
-    path('search/', SearchAPIView.as_view(), name='review'),
+    path('search/', SearchAPIView.as_view(), name='search'),
 
 ]
 
