@@ -7,9 +7,10 @@ from django.contrib.auth import get_user_model
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, ProductSerializer, CategorySerializer, OrderSerializer, \
-     FranchiseSerializer, ReviewSerializer, ProductDetailSerializer
+     FranchiseSerializer, ReviewSerializer, ProductDetailSerializer, SearchProductSerializer
 from django.contrib.auth import authenticate, login
 from .models import Product, Category, Order, Franchise, Reviews
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -135,4 +136,15 @@ class DetailProductView(APIView):
         product = get_object_or_404(Product, id=product_id)
         serializer = ProductDetailSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
+class SearchAPIView(generics.ListAPIView):
+    serializer_class = SearchProductSerializer 
+    queryset = Product.objects.all() 
+
+    def get_queryset(self):
+        query = self.request.query_params.get('q', None)
+        if query is not None:
+            # searching by product name/franchise/category
+            products = self.queryset.filter(Q(name__icontains=query) | Q(franchise__name__icontains=query) | Q(franchise__category__name=query))
+        return products 
+

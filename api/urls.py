@@ -24,4 +24,9 @@ urlpatterns = [
 
     #get product
     path('product/detail/<int:product_id>/', DetailProductView.as_view(), name='review'),
+
+     # search
+    path('search/', SearchAPIView.as_view(), name='review'),
+
 ]
+

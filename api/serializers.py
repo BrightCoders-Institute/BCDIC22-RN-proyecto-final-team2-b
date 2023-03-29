@@ -50,6 +50,12 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'name', 'rating', 'price', 'recently_added', 'best_seller', 'best_seller_image', 'image', 'franchise']
 
+
+class SearchProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['name',  'price',  'image', ]
+
 class ProductDetailSerializer(serializers.ModelSerializer):
     franchise = FranchiseSerializer(read_only=True)
     reviews = serializers.SerializerMethodField()
