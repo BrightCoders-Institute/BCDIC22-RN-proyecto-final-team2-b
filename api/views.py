@@ -147,3 +147,4 @@ class SearchAPIView(generics.ListAPIView):
             # searching by product name/franchise/category
             products = self.queryset.filter(Q(name__icontains=query) | Q(franchise__name__icontains=query) | Q(franchise__category__name=query))
         return products 
+
