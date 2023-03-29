@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import SignUpView, LoginView, ProductViewSet, CategoryViewSet, UserView, OrderView, FranchiseView, FavoriteProductView, \
-    ReviewProductAPIView, DetailProductView
+    ReviewProductAPIView, DetailProductView, SearchAPIView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -26,6 +26,6 @@ urlpatterns = [
     path('product/detail/<int:product_id>/', DetailProductView.as_view(), name='review'),
 
      # search
-    path('search/', SearchAPIView.as_view(), name='review'),
+    path('search/', SearchAPIView.as_view(), name='search'),
 
 ]
