@@ -7,9 +7,9 @@ from django.contrib.auth import get_user_model
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer, ProductSerializer, CategorySerializer, OrderSerializer, \
-     FranchiseSerializer, ReviewSerializer, ProductDetailSerializer, SearchProductSerializer
+     FranchiseSerializer, ReviewSerializer, ProductDetailSerializer, SearchProductSerializer, OrderItemSerializer
 from django.contrib.auth import authenticate, login
-from .models import Product, Category, Order, Franchise, Reviews
+from .models import Product, Category, Order, Franchise, Reviews, OrderItem
 from django.db.models import Q
 
 User = get_user_model()
@@ -147,4 +147,70 @@ class SearchAPIView(generics.ListAPIView):
             # searching by product name/franchise/category
             products = self.queryset.filter(Q(name__icontains=query) | Q(franchise__name__icontains=query) | Q(franchise__category__name=query))
         return products 
+
+class OrderItemListAPIView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderItemSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return OrderItem.objects.filter(user_id=user)
+
+class OrderItemAPIView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        product_id = request.data.get('product_id')
+        qty = request.data.get('qty', 1)
+        user = request.user
+
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({'detail': 'Product not found.'}, status=404)
+
+        order_item, created = OrderItem.objects.get_or_create(
+            user_id=user,
+            product_id=product,
+            order_id=None,
+            defaults={'qty': qty},
+        )
+        serializer = OrderItemSerializer(order_item)
+
+        return Response(serializer.data, status=201)
+
+    def delete(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+            order_item = OrderItem.objects.get(user_id=request.user, product_id=product)
+        except OrderItem.DoesNotExist:
+            return Response({'detail': 'Order item not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        order_item.delete()
+
+        return Response({'detail': 'Order item deleted.'}, status=status.HTTP_204_NO_CONTENT)
+
+    def patch(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'detail': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            order_item = OrderItem.objects.get(user_id=request.user, product_id=product)
+        except OrderItem.DoesNotExist:
+            return Response({'detail': 'Order item not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        qty = request.data.get('qty')
+        if qty is None:
+            return Response({'detail': 'Qty is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        order_item.qty = qty
+        order_item.save()
+
+        serializer = OrderItemSerializer(order_item)
+
+        return Response(serializer.data)
 

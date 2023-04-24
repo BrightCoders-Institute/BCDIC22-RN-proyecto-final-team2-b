@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Product, Category, Franchise, Order, Category, Reviews
+from .models import Product, Category, Franchise, Order, Category, Reviews, OrderItem
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
@@ -75,6 +75,13 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields= ["delivery_date", "shippingPrice", "status", "totalPrice"]
 
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    product_id = ProductSerializer()
+
+    class Meta:
+        model = OrderItem
+        fields = ['product_id', "qty"]
 
 class FranchiseSerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True, read_only=True, source='product_set')

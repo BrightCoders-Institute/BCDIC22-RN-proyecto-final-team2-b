@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import SignUpView, LoginView, ProductViewSet, CategoryViewSet, UserView, OrderView, FranchiseView, FavoriteProductView, \
-    ReviewProductAPIView, DetailProductView, SearchAPIView
+    ReviewProductAPIView, DetailProductView, SearchAPIView, OrderItemAPIView, OrderItemListAPIView
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -28,5 +28,10 @@ urlpatterns = [
      # search
     path('search/', SearchAPIView.as_view(), name='search'),
 
+        # cart
+    path('get_orders/', OrderItemListAPIView.as_view(), name='hola'),
+    # remove from cart
+    path('orders_items/<int:pk>/',OrderItemAPIView.as_view(), name='orders_items'),
+    path('orders_items/',OrderItemAPIView.as_view(), name='orders_items'),
 ]
 
